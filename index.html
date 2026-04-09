@@ -1,316 +1,147 @@
-const infoData = {
-  bombe1: {
-    title: 'Før nedslag',
-    description:
-      'Hvis der varsles atomangreb, skal du straks søge mod kælder, beskyttelsesrum eller en massiv bygning. Gå væk fra vinduer, glas og åbne pladser.',
-    efficiency: [
-      'Søg øjeblikkeligt dækning under jord eller bag tykke vægge',
-      'Tag vand, radio, lommelygte og førstehjælp med',
-      'Luk døre, vinduer og ventilation hvis du når det'
-    ],
-    requirement: [
-      'Undgå panik og hurtige flokbevægelser',
-      'Se ikke mod lysglimtet',
-      'Hold børn og sårbare personer tæt på dig'
-    ]
-  },
-  bombe2: {
-    title: 'Under eksplosion',
-    description:
-      'Ved lysglimt og trykbølge skal du kaste dig ned, vende ansigtet væk og beskytte hoved og nakke. Bliv i dækning til trykbølgen er passeret.',
-    efficiency: [
-      'Læg dig fladt ned med ansigtet væk fra eksplosionen',
-      'Dæk hoved og nakke med arme, jakke eller stof',
-      'Vent nogle sekunder ekstra før du rejser dig'
-    ],
-    requirement: [
-      'Stå ikke tæt ved vinduer eller løse genstande',
-      'Undgå at løbe i panik midt i trykbølgen',
-      'Søg hurtigst muligt indendørs efter første chokbølge'
-    ]
-  },
-  bombe3: {
-    title: 'Efter nedslag',
-    description:
-      'Efter et atomnedslag er radioaktivt nedfald en stor fare. Bliv indenfor, forsegl rummet og vent på beskeder fra myndigheder eller nødradio.',
-    efficiency: [
-      'Bliv indenfor i mindst 24 til 48 timer hvis muligt',
-      'Fjern støvet tøj og vask udsat hud forsigtigt',
-      'Spis kun beskyttet mad og drik rent vand'
-    ],
-    requirement: [
-      'Undgå unødvendige ture udenfor',
-      'Lyt til radio og officielle meldinger',
-      'Gem rationer og hold energien nede'
-    ]
-  },
-  soldat: {
-    title: 'Møde med fjendtlige styrker',
-    description:
-      'Hvis du møder fjendens soldater, skal du undgå konfrontation. Hold hænderne synlige, bevæg dig roligt og gør intet som kan opfattes som truende.',
-    efficiency: [
-      'Hold afstand og undgå pludselige bevægelser',
-      'Tal kort, roligt og kun hvis du bliver tiltalt',
-      'Søg væk fra kontrolposter når det kan gøres sikkert'
-    ],
-    requirement: [
-      'Løb ikke mod bevæbnede soldater',
-      'Bær ikke noget der kan ligne et våben',
-      'Forsøg at beskytte børn og andre bag dig'
-    ]
-  }
-};
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Emergency site om atomtrussel, overlevelse og indberetning under en nødsituation.">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/general.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/burger.css">
+  <link rel="stylesheet" href="css/cards.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" href="css/fallout.css">
+  <link rel="stylesheet" href="css/mobile-nav-rebuild.css">
+  <link rel="stylesheet" href="css/final-overrides.css">
+  <link rel="icon" type="image/png" href="img/vaultnet-icon.png">
+  <title>Vault Net | Forside</title>
+  <link rel="stylesheet" href="css/v25-polish.css">
+</head>
+<body id="frontpage">
+  <header class="site-header">
+    <nav class="nav-container">
+      <div id="logotype-wrapper" class="logo">
+        <a class="logo-mark vault-brand" href="index.html" aria-label="Gå til forsiden på Vault Net">
+          <span class="vault-brand__word vault-brand__word--left">Vault</span>
+          <img class="vault-brand__icon" src="img/vaultnet-icon.png" alt="Vault Net ikon">
+          <span class="vault-brand__word vault-brand__word--right">net</span>
+        </a>
+      </div>
 
-const infoTitle = document.querySelector('#info-title');
-const infoDescription = document.querySelector('#info-description');
-const efficiencyList = document.querySelector('#efficiency-list');
-const requirementList = document.querySelector('#requirement-list');
-const infographicObject = document.querySelector('#infographic-object');
-const infoTextColumn = document.querySelector('#instruction .info-text');
-const animatedPanels = document.querySelectorAll('#instruction .text-panel, #instruction .info-box');
-let activeElement = null;
-let hotspotsInitialised = false;
-let countdownOverlay = null;
-let countdownNumber = null;
-let countdownTimers = [];
+      <ul class="menu" id="site-menu">
+        <li><a class="menuItem active" href="index.html">Forside</a></li>
+        <li><a class="menuItem" href="instruction.html">Nærkontakt</a></li>
+        <li><a class="menuItem" href="register.html">Indberet</a></li>
+      </ul>
 
-function fillList(target, items) {
-  if (!target) return;
-  target.innerHTML = '';
-  items.forEach((item) => {
-    const li = document.createElement('li');
-    li.textContent = item;
-    target.appendChild(li);
-  });
-}
+      <div class="nav-actions">
+        <button id="alarm-toggle" class="theme-toggle alarm-toggle" type="button" data-alarm-trigger data-alarm-on-text="Stop alarm" data-alarm-off-text="Alarm" aria-pressed="false" aria-label="Aktivér eller deaktiver rød alarm i baggrunden">Alarm</button>
+        <button class="burger" type="button" aria-label="Åbn menu" aria-controls="mobile-nav-panel" aria-expanded="false">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </button>
+      </div>
+      <div class="mobile-nav-panel" id="mobile-nav-panel" hidden>
+        <p class="mobile-nav-panel__eyebrow">Vault navigation</p>
+        <a class="mobile-nav-panel__link is-active" href="index.html">Forside</a>
+        <a class="mobile-nav-panel__link" href="instruction.html">Nærkontakt</a>
+        <a class="mobile-nav-panel__link" href="register.html">Indberet</a>
+        <button class="mobile-nav-panel__alarm" type="button" data-alarm-trigger data-alarm-on-text="Stop alarm" data-alarm-off-text="Rød alarm" aria-pressed="false" aria-label="Aktivér eller deaktiver rød alarm i baggrunden">Rød alarm</button>
+      </div>
+    </nav>
+  </header>
 
-function buildCountdownOverlay() {
-  if (!infoTextColumn || countdownOverlay) return;
+  <main>
+    <section class="vault-hero">
+      <div class="vault-hero__copy">
+        <p class="eyebrow">Civil defense terminal // sektor Danmark</p>
+        <h1>Vault Net holder overblikket, når verden flimrer</h1>
+        <p class="vault-hero__lede">Vault Net samler vejledning, varsling og indberetning i én bunkerterminal. Her kan brugeren hurtigt orientere sig om trusselsniveau, handlevejledninger og rapportering under en beredskabssituation.</p>
 
-  countdownOverlay = document.createElement('div');
-  countdownOverlay.className = 'countdown-overlay';
-  countdownOverlay.setAttribute('aria-hidden', 'true');
-  countdownOverlay.innerHTML = `
-    <div class="countdown-overlay__film-grain"></div>
-    <div class="countdown-overlay__frame">
-      <div class="countdown-overlay__ring countdown-overlay__ring--outer"></div>
-      <div class="countdown-overlay__ring countdown-overlay__ring--inner"></div>
-      <div class="countdown-overlay__cross countdown-overlay__cross--horizontal"></div>
-      <div class="countdown-overlay__cross countdown-overlay__cross--vertical"></div>
-      <div class="countdown-overlay__sweep"></div>
-      <div class="countdown-overlay__number">3</div>
-    </div>
-  `;
+        <div class="vault-hero__actions">
+          <a class="button" href="instruction.html">Åbn nærkontakt</a>
+          <a class="button button_secondary" href="register.html">Send indberetning</a>
+        </div>
 
-  countdownNumber = countdownOverlay.querySelector('.countdown-overlay__number');
-  countdownOverlay.addEventListener('animationend', () => {
-    countdownOverlay.classList.remove('is-playing');
-  });
+        <div class="vault-status-grid" aria-label="Statusmoduler">
+          <article class="vault-status-card">
+            <span class="vault-status-card__label">Status</span>
+            <h2><span>Trussels-</span><span>niveau</span></h2>
+            <p>Få et hurtigt overblik over alarm, beskyttelse, nedfald og næste skridt, når situationen kræver klare valg.</p>
+          </article>
+          <article class="vault-status-card">
+            <span class="vault-status-card__label">Routing</span>
+            <h2><span>Tre hoved-</span><span>moduler</span></h2>
+            <p>Terminalen leder videre til nærkontakt, indberetning og arkiv, så vigtig information er samlet ét sted.</p>
+          </article>
+          <article class="vault-status-card">
+            <span class="vault-status-card__label">Visning</span>
+            <h2><span>Arkiv-</span><span>terminal</span></h2>
+            <p>Det mørke skærmlys, de tekniske markeringer og de robuste paneler understøtter et troværdigt beredskabsunivers.</p>
+          </article>
+        </div>
+      </div>
 
-  infoTextColumn.appendChild(countdownOverlay);
-}
+      <aside class="vault-hero__aside" aria-label="Kontrolpanel og arkiv">
+        <article class="vault-poster card-shell">
+          <div class="vault-poster__header">
+            <span>Vault Net</span>
+            <span>Front terminal</span>
+          </div>
+          <img src="img/1769864375811.jpg" alt="Kort og plakat om atomtrussel under den kolde krig">
+        </article>
 
-function clearCountdownTimers() {
-  countdownTimers.forEach((timer) => window.clearTimeout(timer));
-  countdownTimers = [];
-}
+        <article class="vault-side-panel card-shell">
+          <h2 class="vault-side-panel__title">Vault Net</h2>
+          <ul class="vault-side-panel__list">
+            <li>Få direkte adgang til varsling, vejledning og feltlog</li>
+            <li>Brug arkivtilstand for en mørkere terminalvisning</li>
+            <li>Navigér mellem bunkerens vigtigste systemer fra forsiden</li>
+          </ul>
+        </article>
+      </aside>
+    </section>
 
-function triggerCountdownOverlay() {
-  if (!countdownOverlay || !countdownNumber) return;
+    <section class="vault-link-grid" aria-label="Vigtige moduler">
+      <a class="vault-link-card" href="instruction.html">
+        <span class="vault-link-card__index">01</span>
+        <h2>Nærkontakt</h2>
+        <p>Læs protokoller, undersøg grafikken og få de vigtigste råd direkte fra den taktiske terminal.</p>
+      </a>
+      <a class="vault-link-card" href="register.html">
+        <span class="vault-link-card__index">02</span>
+        <h2>Indberet</h2>
+        <p>Send feltlog med position, behov og status til systemet, når hændelser skal registreres hurtigt.</p>
+      </a>
+      <button class="vault-link-card vault-link-card--toggle" id="alarm-toggle-card" type="button" data-alarm-trigger aria-pressed="false" aria-label="Aktivér eller deaktiver rød alarm i baggrunden">
+        <span class="vault-link-card__index">03</span>
+        <h2>Rød alarm</h2>
+        <p>Aktivér en pulserende alarmtilstand i baggrunden med sirenepuls, så terminalen reagerer som et rigtigt beredskabssystem.</p>
+      </button>
+    </section>
+  </main>
 
-  clearCountdownTimers();
-  countdownOverlay.classList.remove('is-playing');
-  void countdownOverlay.offsetWidth;
-  countdownNumber.textContent = '3';
-  countdownOverlay.classList.add('is-playing');
+  <footer class="site-footer">
+    <nav class="footer-nav">
+      <ul>
+        <li><a href="index.html">Forside</a></li>
+        <li><a href="instruction.html">Nærkontakt</a></li>
+        <li><a href="register.html">Indberet</a></li>
+      </ul>
+      <ul>
+        <li><a href="#">Beredskab</a></li>
+        <li><a href="#">Arkiv</a></li>
+        <li><a href="#">Kontakt</a></li>
+      </ul>
+      <ul>
+        <li><a href="#">Privatliv</a></li>
+        <li><a href="#">Tilgængelighed</a></li>
+        <li><a href="404.html">404</a></li>
+      </ul>
+    </nav>
+  </footer>
 
-  countdownTimers.push(window.setTimeout(() => {
-    if (countdownNumber) countdownNumber.textContent = '2';
-  }, 900));
-
-  countdownTimers.push(window.setTimeout(() => {
-    if (countdownNumber) countdownNumber.textContent = '1';
-  }, 1800));
-
-  countdownTimers.push(window.setTimeout(() => {
-    if (countdownOverlay) countdownOverlay.classList.remove('is-playing');
-    if (countdownNumber) countdownNumber.textContent = '3';
-  }, 3200));
-}
-
-function triggerInfoFade() {
-  animatedPanels.forEach((panel) => {
-    panel.classList.remove('fadeIn');
-    void panel.offsetWidth;
-    panel.classList.add('fadeIn');
-  });
-  triggerCountdownOverlay();
-}
-
-function updatePanel(data) {
-  if (infoTitle) infoTitle.textContent = data.title;
-  if (infoDescription) infoDescription.textContent = data.description;
-  fillList(efficiencyList, data.efficiency);
-  fillList(requirementList, data.requirement);
-  triggerInfoFade();
-}
-
-function setActiveElement(element) {
-  if (activeElement && activeElement !== element) {
-    activeElement.classList.remove('is-active');
-  }
-  activeElement = element;
-  if (activeElement) {
-    activeElement.classList.add('is-active');
-  }
-}
-
-function makeInteractive(element, dataKey) {
-  if (!element || !infoData[dataKey] || element.dataset.hotspotBound === 'true') return;
-
-  element.dataset.hotspotBound = 'true';
-  element.classList.add('svg-hotspot');
-  element.classList.add(dataKey.startsWith('bombe') ? 'svg-hotspot--bomb' : 'svg-hotspot--soldier');
-  element.style.cursor = 'pointer';
-  element.setAttribute('tabindex', '0');
-  element.setAttribute('role', 'button');
-  element.setAttribute('aria-label', infoData[dataKey].title);
-
-  const activate = () => {
-    updatePanel(infoData[dataKey]);
-    setActiveElement(element);
-  };
-
-  element.addEventListener('click', activate);
-  element.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      activate();
-    }
-  });
-}
-
-function injectSvgStyles(svgDoc) {
-  if (!svgDoc || svgDoc.getElementById('vault-hotspot-style')) return;
-
-  const style = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'style');
-  style.setAttribute('id', 'vault-hotspot-style');
-  style.textContent = `
-    .svg-hotspot {
-      transform-box: fill-box;
-      transform-origin: center center;
-      transition: filter 220ms ease, opacity 220ms ease, transform 220ms ease;
-      outline: none;
-      opacity: 1;
-    }
-
-    .svg-hotspot:hover,
-    .svg-hotspot:focus {
-      opacity: 1;
-      filter:
-        drop-shadow(0 0 22px rgba(255, 46, 46, 1))
-        drop-shadow(0 0 48px rgba(255, 46, 46, 0.88))
-        drop-shadow(0 0 82px rgba(255, 46, 46, 0.56));
-    }
-
-    .svg-hotspot.is-active {
-      filter:
-        drop-shadow(0 0 24px rgba(255, 52, 52, 1))
-        drop-shadow(0 0 54px rgba(255, 52, 52, 0.92))
-        drop-shadow(0 0 96px rgba(255, 52, 52, 0.62));
-    }
-
-    .svg-hotspot--bomb:hover,
-    .svg-hotspot--bomb:focus {
-      animation: none;
-      filter:
-        drop-shadow(0 0 10px rgba(255, 20, 20, 1))
-        drop-shadow(0 0 20px rgba(255, 20, 20, 0.92))
-        drop-shadow(0 0 32px rgba(255, 20, 20, 0.72));
-    }
-
-    .svg-hotspot--bomb.is-active {
-      animation: vaultBombImpact 980ms cubic-bezier(0.18, 0.78, 0.2, 1) 1;
-      filter:
-        drop-shadow(0 0 42px rgba(255, 16, 16, 1))
-        drop-shadow(0 0 88px rgba(255, 16, 16, 1))
-        drop-shadow(0 0 144px rgba(255, 16, 16, 0.94))
-        drop-shadow(0 0 206px rgba(255, 16, 16, 0.68));
-    }
-
-    @keyframes vaultBombSway {
-      0% {
-        transform: translateX(0) scale(1);
-      }
-      26% {
-        transform: translateX(-18px) scale(1.02);
-      }
-      62% {
-        transform: translateX(16px) scale(1.045);
-      }
-      100% {
-        transform: translateX(0) scale(1);
-      }
-    }
-
-    @keyframes vaultBombImpact {
-      0% {
-        transform: translateX(0) scale(1);
-      }
-      20% {
-        transform: translateX(-24px) scale(1.03);
-      }
-      58% {
-        transform: translateX(20px) scale(1.07);
-      }
-      100% {
-        transform: translateX(0) scale(1.02);
-      }
-    }
-  `;
-  svgDoc.documentElement.appendChild(style);
-}
-
-function initInfographic() {
-  if (!infographicObject || hotspotsInitialised) return;
-
-  const svgDoc = infographicObject.contentDocument;
-  if (!svgDoc) return;
-
-  const bombe1 = svgDoc.getElementById('bombe_1') || svgDoc.getElementById('bombe_x5F_1');
-  const bombe2 = svgDoc.getElementById('bombe_2') || svgDoc.getElementById('bombe_x5F_2');
-  const bombe3 = svgDoc.getElementById('bombe_3') || svgDoc.getElementById('bombe_x5F_3');
-  const soldat = svgDoc.getElementById('soldat');
-
-  if (!bombe1 && !bombe2 && !bombe3 && !soldat) return;
-
-  injectSvgStyles(svgDoc);
-  makeInteractive(bombe1, 'bombe1');
-  makeInteractive(bombe2, 'bombe2');
-  makeInteractive(bombe3, 'bombe3');
-  makeInteractive(soldat, 'soldat');
-
-  hotspotsInitialised = true;
-
-  if (bombe1) {
-    bombe1.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-  }
-}
-
-buildCountdownOverlay();
-
-if (infographicObject) {
-  infographicObject.addEventListener('load', initInfographic);
-
-  if (infographicObject.contentDocument?.documentElement) {
-    initInfographic();
-  } else {
-    window.addEventListener('load', initInfographic, { once: true });
-  }
-}
-
-animatedPanels.forEach((panel) => {
-  panel.addEventListener('animationend', () => {
-    panel.classList.remove('fadeIn');
-  });
-});
+  <script src="js/main.js"></script>
+</body>
+</html>
